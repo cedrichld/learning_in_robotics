@@ -51,7 +51,7 @@ $$x = \begin{bmatrix} q \\ \omega \end{bmatrix} \in \mathbb{R}^7$$
 
 where $q$ is a unit quaternion (orientation) and $\omega$ is angular velocity. Because quaternions are constrained to the unit sphere, the covariance is $\Sigma \in \mathbb{R}^{6 \times 6}$ (not $7 \times 7$), using axis-angle error parameterization following the [Kraft (2003)](pdf/kraft_ukf.pdf) formulation. Sigma points are generated in the 6D tangent space, mapped to quaternions via the exponential map, and the quaternion mean is computed via iterative gradient descent (Kraft Sec. 3.4).
 
-**Process model:** $q_{k+1} = q_k \otimes \text{from\_axis\_angle}(\omega \cdot \Delta t)$, with $\omega$ assumed constant.
+**Process model:** $q_{k+1} = q_k \otimes$ `from_axis_angle` $(\omega \cdot \Delta t)$, with $\omega$ assumed constant.
 **Measurement model:** Accelerometer predicts the gravity vector rotated into the body frame; gyroscope directly measures $\omega$.
 
 ### Step 1 — IMU Calibration
