@@ -10,6 +10,35 @@ The course covers **state estimation**, **optimal control**, and **reinforcement
 
 ---
 
+## Topics Covered
+
+The course develops foundations in **state estimation**, **control**, and **reinforcement learning** for robotics:
+
+**Module 1 — State Estimation**
+- Probability background and Bayesian inference
+- Markov chains and Hidden Markov Models
+- Kalman Filter, Extended Kalman Filter (EKF), and Unscented Kalman Filter (UKF)
+- Particle filters and sequential Monte Carlo methods
+- Mapping, localization, and SLAM
+- Neural Radiance Fields (NeRF) and Gaussian Splatting for SLAM
+- Foundation models for robotics
+
+**Module 2 — Control**
+- Linear control and dynamic programming
+- Markov Decision Processes (MDPs)
+- Value Iteration and Policy Iteration
+- Bellman equation and optimality
+- Linear Quadratic Regulator (LQR)
+- Linear Quadratic Gaussian (LQG)
+
+**Module 3 — Reinforcement Learning**
+- Imitation learning and behavior cloning
+- Policy gradient methods (REINFORCE, PPO)
+- Q-Learning and Deep Q-Networks (DQN)
+- Offline reinforcement learning
+
+---
+
 ## HW 2 — Unscented Kalman Filter (UKF) for 3D Orientation Estimation
 
 **Goal:** Implement an Unscented Kalman Filter (UKF) to track the orientation of an IMU in three dimensions, fusing accelerometer and gyroscope measurements against Vicon motion-capture ground truth. Score: **56/56** on the Gradescope autograder.
@@ -27,7 +56,7 @@ where $q$ is a unit quaternion (orientation) and $\omega$ is angular velocity. B
 
 ### Step 1 — IMU Calibration
 
-The raw IMU readings are biased: $\text{value} = \text{raw} + \beta$. We built interactive slider tools to calibrate the accelerometer and gyroscope biases against Vicon ground truth. Roll and pitch are recovered from the accelerometer via gravity direction; gyroscope biases are found by matching integrated angular velocity to Vicon angular rates.
+The raw IMU readings are biased: $\text{value} = \text{raw} + \beta$. I built interactive slider tools using Claude Code to calibrate the accelerometer and gyroscope biases against Vicon ground truth. Roll and pitch are recovered from the accelerometer via gravity direction; gyroscope biases are found by matching integrated angular velocity to Vicon angular rates.
 
 <p align="center">
   <img src="img/hw2/accel_tuning.gif" width="48%">
@@ -52,7 +81,7 @@ The combined integration check confirms all 6 biases are consistent:
 
 ### Step 2 — UKF Noise Parameter Tuning
 
-With calibrated sensors, the UKF has four noise parameters to tune: process noise ($\sigma_q$, $\sigma_\omega$) and measurement noise ($\sigma_{\text{acc}}$, $\sigma_{\text{gyro}}$). We built a real-time slider interface to visualize the effect of each parameter on filter output vs. Vicon.
+With calibrated sensors, the UKF has four noise parameters to tune: process noise ($\sigma_q$, $\sigma_\omega$) and measurement noise ($\sigma_{\text{acc}}$, $\sigma_{\text{gyro}}$). I built a real-time slider interface to visualize the effect of each parameter on filter output vs. Vicon.
 
 <p align="center">
   <img src="img/hw2/UKF_TUNING.png" width="70%">
@@ -77,7 +106,7 @@ The UKF outputs are analyzed across four diagnostic views: quaternion components
 
 The journey from 55.25/56 to full marks required three breakthroughs:
 
-1. **Numerical hygiene:** The provided `quaternion.py` had subtle issues (unclamped `acos`, commented-out normalization). We added 5 defensive normalizations and a covariance symmetrization step in the filter. This didn't change the score directly but made the filter respond *predictably* to parameter changes.
+1. **Numerical hygiene:** The provided `quaternion.py` had subtle issues (unclamped `acos`, commented-out normalization). I added 5 defensive normalizations and a covariance symmetrization step in the filter. This didn't change the score directly but made the filter respond *predictably* to parameter changes.
 
 2. **Understanding accelerometer-yaw cross-coupling:** Accelerometers can only observe roll/pitch (via gravity), not yaw. But in quaternion representation, accelerometer corrections "leak" into yaw through cross-terms. The parameters $\sigma_q$ and $\sigma_{\text{acc}}$ control this leakage.
 
@@ -88,8 +117,7 @@ The journey from 55.25/56 to full marks required three breakthroughs:
 R = np.diag([sigma_q**2]*3 + [sigma_w**2]*3)
 
 # Anisotropic (56/56):
-R = np.diag([sigma_q**2, sigma_q**2, sigma_q_yaw**2,
-             sigma_w**2, sigma_w**2, sigma_w**2])
+R = np.diag([sigma_q_rp**2, sigma_q_rp**2, sigma_q_yaw**2] + [sigma_w**2]*3)
 ```
 
 **Concepts learned:**
@@ -123,32 +151,3 @@ The EKF successfully recovers $a \approx -1$ with decreasing uncertainty, demons
 
 **Concepts learned:**
 EKF derivation for nonlinear systems, joint state-parameter estimation, Jacobian computation for measurement updates, convergence and uncertainty analysis.
-
----
-
-## Topics Covered
-
-The course develops foundations in **state estimation**, **control**, and **reinforcement learning** for robotics:
-
-**Module 1 — State Estimation**
-- Probability background and Bayesian inference
-- Markov chains and Hidden Markov Models
-- Kalman Filter, Extended Kalman Filter (EKF), and Unscented Kalman Filter (UKF)
-- Particle filters and sequential Monte Carlo methods
-- Mapping, localization, and SLAM
-- Neural Radiance Fields (NeRF) and Gaussian Splatting for SLAM
-- Foundation models for robotics
-
-**Module 2 — Control**
-- Linear control and dynamic programming
-- Markov Decision Processes (MDPs)
-- Value Iteration and Policy Iteration
-- Bellman equation and optimality
-- Linear Quadratic Regulator (LQR)
-- Linear Quadratic Gaussian (LQG)
-
-**Module 3 — Reinforcement Learning**
-- Imitation learning and behavior cloning
-- Policy gradient methods (REINFORCE, PPO)
-- Q-Learning and Deep Q-Networks (DQN)
-- Offline reinforcement learning
