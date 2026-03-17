@@ -10,35 +10,6 @@ The course covers **state estimation**, **optimal control**, and **reinforcement
 
 ---
 
-## Topics Covered
-
-The course develops foundations in **state estimation**, **control**, and **reinforcement learning** for robotics:
-
-**Module 1 — State Estimation**
-- Probability background and Bayesian inference
-- Markov chains and Hidden Markov Models
-- Kalman Filter, Extended Kalman Filter (EKF), and Unscented Kalman Filter (UKF)
-- Particle filters and sequential Monte Carlo methods
-- Mapping, localization, and SLAM
-- Neural Radiance Fields (NeRF) and Gaussian Splatting for SLAM
-- Foundation models for robotics
-
-**Module 2 — Control**
-- Linear control and dynamic programming
-- Markov Decision Processes (MDPs)
-- Value Iteration and Policy Iteration
-- Bellman equation and optimality
-- Linear Quadratic Regulator (LQR)
-- Linear Quadratic Gaussian (LQG)
-
-**Module 3 — Reinforcement Learning**
-- Imitation learning and behavior cloning
-- Policy gradient methods (REINFORCE, PPO)
-- Q-Learning and Deep Q-Networks (DQN)
-- Offline reinforcement learning
-
----
-
 ## HW 2 — Unscented Kalman Filter (UKF) for 3D Orientation Estimation
 
 **Goal:** Implement an Unscented Kalman Filter (UKF) to track the orientation of an IMU in three dimensions, fusing accelerometer and gyroscope measurements against Vicon motion-capture ground truth. Score: **56/56** on the Gradescope autograder.
@@ -162,3 +133,32 @@ The EKF successfully recovers $a \approx -1$ with decreasing uncertainty, demons
 
 **Concepts learned:**
 EKF derivation for nonlinear systems, joint state-parameter estimation, Jacobian computation for measurement updates, convergence and uncertainty analysis.
+
+---
+
+## Topics Covered
+
+The course develops foundations in **state estimation**, **control**, and **reinforcement learning** for robotics:
+
+**Module 1 — State Estimation**
+- Probability background and Bayesian inference
+- Markov chains and Hidden Markov Models
+- Kalman Filter, Extended Kalman Filter (EKF), and Unscented Kalman Filter (UKF)
+- Particle filters and sequential Monte Carlo methods
+- Mapping, localization, and SLAM
+- Neural Radiance Fields (NeRF) and Gaussian Splatting for SLAM
+- Foundation models for robotics
+
+**Module 2 — Control**
+- Linear control and dynamic programming
+- Markov Decision Processes (MDPs)
+- Value Iteration and Policy Iteration
+- Bellman equation and optimality
+- Linear Quadratic Regulator (LQR)
+- Linear Quadratic Gaussian (LQG)
+
+**Module 3 — Reinforcement Learning**
+- Imitation learning and behavior cloning
+- Policy gradient methods (REINFORCE, PPO)
+- Q-Learning and Deep Q-Networks (DQN)
+- Offline reinforcement learning
