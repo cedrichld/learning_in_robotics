@@ -43,6 +43,17 @@ The course develops foundations in **state estimation**, **control**, and **rein
 
 **Goal:** Implement an Unscented Kalman Filter (UKF) to track the orientation of an IMU in three dimensions, fusing accelerometer and gyroscope measurements against Vicon motion-capture ground truth. Score: **56/56** on the Gradescope autograder.
 
+<p align="center">
+  <img src="img/hw2/orientation_ds1.gif" width="85%">
+</p>
+<p align="center">
+  <img src="img/hw2/orientation_ds2.gif" width="85%">
+</p>
+<p align="center">
+  <img src="img/hw2/orientation_ds3.gif" width="85%">
+</p>
+<p align="center"><em>3D orientation tracking (Datasets 1–3) — Vicon ground truth (gray) vs. UKF estimate (RGB axes) with 3σ covariance ellipsoid.</em></p>
+
 ### The UKF on SO(3)
 
 This is not a standard UKF — the state lives partly on the rotation manifold:
