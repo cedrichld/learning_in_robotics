@@ -10,6 +10,68 @@ The course covers **state estimation**, **optimal control**, and **reinforcement
 
 ---
 
+## HW 3 — NeRF, Particle Filter SLAM, and Policy Iteration
+
+### Neural Radiance Field (NeRF) for 3D Scene Reconstruction
+
+**Goal:** Implement a NeRF from scratch to reconstruct a 3D scene (LEGO bulldozer) from 100 posed 2D images, using COLMAP for camera pose estimation.
+
+<p align="center">
+  <img src="img/hw3/turntable.gif" width="45%">
+</p>
+
+<p align="center">
+  <img src="img/hw3/train_comparisons.png" width="45%">
+</p>
+  
+<p align="center"><em>Left: Turntable render orbiting the reconstructed scene. Right: Ground truth (left column) vs. NeRF renders (right column) from training viewpoints.</em></p>
+
+**Pipeline:** COLMAP sparse reconstruction → camera intrinsics/extrinsics → ray casting through each pixel → stratified depth sampling → positional encoding (10 frequency bands, $\mathbb{R}^3 \to \mathbb{R}^{63}$) → TinyNeRF MLP → volume rendering (alpha compositing with transmittance).
+
+**Concepts learned:** Pinhole camera model, ray-based rendering, positional encoding for high-frequency detail, volume rendering with alpha compositing, differentiable rendering, COLMAP structure-from-motion.
+
+---
+
+### Particle Filter SLAM on KITTI
+
+**Goal:** Implement SLAM using a particle filter with Velodyne LiDAR and GPS/IMU odometry from the KITTI dataset. Estimate the car's trajectory while simultaneously building an occupancy grid map across 4 driving sequences.
+
+<p align="center">
+  <img src="img/hw3/map_00.png" width="48%">
+  <img src="img/hw3/map_02.png" width="48%">
+</p>
+<p align="center"><em>Occupancy maps for KITTI datasets 00 (left) and 02 (right) with SLAM trajectory (red) and odometry (blue). Road boundaries and buildings are clearly visible.</em></p>
+
+<p align="center">
+  <img src="img/hw3/trajectory_00.png" width="60%">
+</p>
+<p align="center"><em>Dataset 00 trajectory comparison — SLAM (red) closely tracks odometry (blue) over a multi-loop urban drive through Karlsruhe.</em></p>
+
+**Pipeline:** LiDAR points → Velodyne-to-camera transform ($T_r$) → camera-to-world via particle pose → occupancy grid update (log-odds) → particle reweighting → stratified resampling.
+
+**Concepts learned:** Particle filters, SE(2) pose composition, LiDAR-to-world coordinate transforms, log-odds occupancy mapping, stratified resampling, KITTI dataset conventions.
+
+---
+
+### Policy Iteration for Stochastic Grid Navigation
+
+**Goal:** Find the optimal policy for a robot navigating a 10×10 grid with stochastic dynamics ($P(\text{intended}) = 0.7$, $P(\text{drift}) = 0.3$), sticky obstacles, and a discounted reward structure ($\gamma = 0.9$).
+
+<p align="center">
+  <img src="img/hw3/part_b_value_east.png" width="48%">
+  <img src="img/hw3/part_c_converged.png" width="48%">
+</p>
+<p align="center"><em>Left: Value function under the naive "always East" policy — cells west of obstacles are heavily penalized (red). Right: Converged optimal policy (iteration 6) with arrows showing the best action at each cell.</em></p>
+
+<p align="center">
+  <img src="img/hw3/part_c_policy_iterations.png" width="85%">
+</p>
+<p align="center"><em>Policy iteration convergence (iterations 0–3). The policy evolves from all-East to routing around obstacles toward the goal. Converged in 6 iterations.</em></p>
+
+**Concepts learned:** Markov Decision Processes, Bellman equation, policy evaluation via linear solve, policy improvement, cost-to-go formulation, stochastic transition matrices.
+
+---
+
 ## HW 2 — Unscented Kalman Filter (UKF) for 3D Orientation Estimation
 
 **Goal:** Implement an Unscented Kalman Filter (UKF) to track the orientation of an IMU in three dimensions, fusing accelerometer and gyroscope measurements against Vicon motion-capture ground truth. Score: **56/56** on the Gradescope autograder.
