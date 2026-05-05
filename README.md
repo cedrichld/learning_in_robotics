@@ -10,6 +10,45 @@ The course covers **state estimation**, **optimal control**, and **reinforcement
 
 ---
 
+## HW 4 — MuJoCo MPC and PPO for the dm_control Walker
+
+### MuJoCo MPC — Real-time Sampling Predictive Control
+
+**Goal:** Run Google DeepMind's [MJPC](https://github.com/google-deepmind/mujoco_mpc) on classic control tasks. The planner samples thousands of action trajectories per second and executes the best one in a receding horizon — no learning, just fast simulation in the loop.
+
+<p align="center">
+  <img src="img/hw4/MUJOCO_Cartpole.gif" width="32%">
+  <img src="img/hw4/MUJOCO_Acrobot.gif" width="32%">
+  <img src="img/hw4/MUJOCO_Humanoid_Stand.gif" width="32%">
+</p>
+<p align="center"><em>Cartpole, Acrobot, and Humanoid Stand stabilized in real time by MJPC.</em></p>
+
+---
+
+### PPO for the dm_control Walker
+
+**Goal:** Train a 2D bipedal walker to walk forward using Proximal Policy Optimization, end-to-end in PyTorch (no SB3/RLlib). Observation: 24-dim (orientations, height, joint velocities). Action: 6-dim continuous joint torques in $[-1, 1]$.
+
+<p align="center">
+  <img src="img/hw4/PPO_Walker.gif" width="65%">
+</p>
+<p align="center"><em>Trained policy walking — deterministic mean action, no Gaussian sampling.</em></p>
+
+The actor is a Gaussian policy $\pi_\theta(u\mid x) = \mathcal{N}(\mu_\theta(x), \sigma)$ with $\mu$ from a 64-64 MLP and a learnable state-independent log-std. A separate 64-64 critic $V_\phi(x)$ is trained by MSE against TD-$\lambda$ returns. Each PPO update minimizes the **clipped surrogate**
+
+$$L^{\text{CLIP}}(\theta) = -\mathbb{E}_t \left[ \min \big( r_t(\theta) A_t,\ \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\, A_t \big) \right], \quad r_t(\theta) = \frac{\pi_\theta(u_t\mid x_t)}{\pi_{\theta_{\text{old}}}(u_t\mid x_t)}$$
+
+with advantages from **Generalized Advantage Estimation** ($\gamma=0.99$, $\lambda=0.95$). KL early-stopping at $1.5 \cdot \kappa_{\text{target}}$ guards against destructive updates. Trained with 8 parallel envs (multiprocessing) on an RTX 3060.
+
+<p align="center">
+  <img src="img/hw4/PPO_progress.png" width="85%">
+</p>
+<p align="center"><em>Training over 5M env-steps. Mean batch return rises from ~30 (random init) to a peak of <strong>789</strong>; further fine-tuning (halved LR) pushed the deterministic-eval best to <strong>888</strong> on the dm_control walker.walk reward (out of ~1000 max).</em></p>
+
+**Concepts learned:** Policy gradients on continuous action spaces, Gaussian policies, the PPO clipped surrogate, GAE advantage estimation, vectorized rollouts via multiprocessing, KL early-stopping, log-std clamping vs. entropy collapse - and the empirical lesson that policy regularization (entropy bonus, action L2) outperforms reward shaping for fixing pathological gaits.
+
+---
+
 ## HW 3 — NeRF, Particle Filter SLAM, and Policy Iteration
 
 ### Neural Radiance Field (NeRF) for 3D Scene Reconstruction
